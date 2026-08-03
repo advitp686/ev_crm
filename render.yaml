@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: showroom-operations-crm
+    runtime: python
+    buildCommand: bash build.sh
+    startCommand: gunicorn crm_project.wsgi:application
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_ALLOWED_HOSTS
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: DJANGO_TIME_ZONE
+        value: Asia/Kolkata

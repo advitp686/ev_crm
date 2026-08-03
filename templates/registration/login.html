@@ -1,0 +1,4 @@
+{% load static %}
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Sign in | Showroom Ops</title><link rel="stylesheet" href="{% static 'crm/app.css' %}"></head>
+<body class="login-page"><div class="login-card"><div class="brand"><span class="brand-mark">SO</span><span>Showroom Ops</span></div><p class="muted">CRM and service management</p><form method="post">{% csrf_token %}{{ form.non_field_errors }}<label>Username{{ form.username }}</label><label>Password{{ form.password }}</label><button class="button primary" type="submit">Sign in</button></form></div></body></html>
