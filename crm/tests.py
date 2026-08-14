@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from .models import Customer, DailyActivity, FollowUp, Lead, SalesTeamMember, ServicePlan, ServiceTeamMember, ServiceTicket, ServiceUpdate, User, WorkTask
 
@@ -25,6 +26,12 @@ class CoreWorkflowTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(FollowUp.objects.count(), 1)
         self.assertEqual(FollowUp.objects.first().lead.customer_name, "Nikhil Das")
+
+    def test_dashboard_handles_general_reminder_without_customer(self):
+        FollowUp.objects.create(title="General reminder", due_at=timezone.now(), assigned_to=self.admin)
+        response = self.client.get(reverse("dashboard"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "General")
 
     def test_service_ticket_is_owned_by_service_team_and_has_timeline(self):
         customer = Customer.objects.create(name="Service Customer", phone="9000000001")
