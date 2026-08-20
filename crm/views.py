@@ -451,14 +451,14 @@ class QuotationUpdateView(LoginRequiredMixin, UpdateView):
 def quotation_pdf(request, pk):
     quote = get_object_or_404(Quotation, pk=pk)
     response = HttpResponse(build_quotation_pdf(quote), content_type="application/pdf")
-    response["Content-Disposition"] = f'attachment; filename="{quote.number}.pdf"'
+    response["Content-Disposition"] = f'inline; filename="{quote.number}.pdf"'
     return response
 
 
 def quotation_public_pdf(request, token):
     quote = get_object_or_404(Quotation, share_token=token)
     response = HttpResponse(build_quotation_pdf(quote), content_type="application/pdf")
-    response["Content-Disposition"] = f'attachment; filename="{quote.number}.pdf"'
+    response["Content-Disposition"] = f'inline; filename="{quote.number}.pdf"'
     return response
 
 

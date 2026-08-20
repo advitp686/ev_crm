@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from .models import Customer, DailyActivity, FollowUp, Lead, SalesTeamMember, ServicePlan, ServiceTeamMember, ServiceTicket, ServiceUpdate, User, WorkTask
+from .models import Customer, DailyActivity, FollowUp, Lead, Quotation, SalesTeamMember, ServicePlan, ServiceTeamMember, ServiceTicket, ServiceUpdate, User, WorkTask
 
 
 class CoreWorkflowTests(TestCase):
@@ -51,10 +51,11 @@ class CoreWorkflowTests(TestCase):
     def test_quotation_pdf_downloads(self):
         response = self.client.post(reverse("quotation-create"), {"customer_name": "PDF Customer", "customer_phone": "9111111111", "model_name": "City EV", "ex_showroom": "100000", "central_subsidy": "5000", "state_subsidy": "5000", "rto_registration": "1000", "insurance": "5000", "accessories": "2000", "discount": "1000", "status": "DRAFT", "valid_until": "2026-08-31"})
         self.assertEqual(response.status_code, 302)
-        quote = __import__("crm.models", fromlist=["Quotation"]).Quotation.objects.get()
+        quote = Quotation.objects.get()
         pdf = self.client.get(reverse("quotation-pdf", args=[quote.pk]))
         self.assertEqual(pdf.status_code, 200)
         self.assertEqual(pdf["Content-Type"], "application/pdf")
+        self.assertTrue(pdf["Content-Disposition"].startswith("inline;"))
         self.assertTrue(pdf.content.startswith(b"%PDF-"))
         public_pdf = self.client.get(reverse("quotation-public-pdf", args=[quote.share_token]))
         self.assertEqual(public_pdf.status_code, 200)
